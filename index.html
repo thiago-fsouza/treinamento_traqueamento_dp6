@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<!-- ==========================================================================
+     ABERTURA DO <head>
+     ========================================================================== -->
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- ======================= GTM: SNIPPET DO <head> =======================
+       >>> COLE AQUI o script do Google Tag Manager (parte 1 de 2) <<<
+       ===================== FIM DO ESPAÇO GTM <head> ===================== -->
+
+  <title>Constelar | Aprenda a ler o céu com dados</title>
+  <meta name="description" content="LP pedagógica de exemplo com dataLayer padronizado.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    /* ---------- Design tokens (inspiração visual DP6: azul, limpo, dados/tech) ---------- */
+    :root {
+      --navy: #0a1f5c;      /* azul institucional escuro */
+      --blue: #1e4dff;      /* azul de ação (botões/links) */
+      --blue-dark: #1536b8; /* hover */
+      --sky: #e8eeff;       /* fundo de seções claras */
+      --cyan: #19c3ff;      /* destaque de dados */
+      --ink: #14213d;
+      --muted: #55627f;
+      --white: #fff;
+      --radius: 12px;
+      --font: "Poppins", "Segoe UI", Roboto, Arial, sans-serif;
+    }
+    * { box-sizing: border-box; margin: 0; }
+    html { scroll-behavior: smooth; }
+    body { font-family: var(--font); color: var(--ink); line-height: 1.6; background: var(--white); }
+    a { color: inherit; text-decoration: none; }
+    :focus-visible { outline: 3px solid var(--cyan); outline-offset: 2px; }
+    .wrap { width: min(1120px, 92%); margin-inline: auto; }
+    section { padding: 88px 0; }
+    h1, h2, h3 { line-height: 1.2; color: var(--navy); }
+    h2 { font-size: clamp(1.6rem, 3vw, 2.2rem); margin-bottom: 12px; }
+
+    /* ---------- Botões ---------- */
+    .btn { display: inline-block; font: 600 1rem var(--font); padding: 14px 28px; border-radius: 999px;
+           border: 2px solid var(--blue); background: var(--blue); color: var(--white); cursor: pointer; transition: background .2s; }
+    .btn:hover { background: var(--blue-dark); border-color: var(--blue-dark); }
+    .btn.ghost { background: transparent; color: var(--white); border-color: rgba(255,255,255,.6); }
+    .btn.ghost:hover { background: rgba(255,255,255,.12); }
+    .btn.sm { padding: 9px 20px; font-size: .9rem; }
+
+    /* ---------- Header ---------- */
+    header { position: sticky; top: 0; z-index: 10; background: var(--white); box-shadow: 0 1px 0 #dde4f5; }
+    .bar { display: flex; align-items: center; justify-content: space-between; height: 72px; }
+    .logo { font-weight: 700; font-size: 1.4rem; color: var(--navy); }
+    .logo span { color: var(--blue); }
+    nav { display: flex; align-items: center; gap: 28px; }
+    nav a:not(.btn) { font-weight: 500; color: var(--muted); }
+    nav a:not(.btn):hover { color: var(--blue); }
+
+    /* ---------- Hero ---------- */
+    .hero { background: linear-gradient(135deg, var(--navy) 0%, #12358f 100%); color: var(--white); padding: 96px 0; overflow: hidden; }
+    .hero .wrap { display: grid; grid-template-columns: 1.2fr 1fr; gap: 48px; align-items: center; }
+    .hero h1 { color: var(--white); font-size: clamp(2rem, 4.6vw, 3.4rem); margin-bottom: 20px; }
+    .hero p { color: #cdd8ff; max-width: 52ch; margin-bottom: 32px; font-size: 1.1rem; }
+    .actions { display: flex; flex-wrap: wrap; gap: 14px; }
+    /* Órbitas feitas só com CSS: ilustra "dados girando em torno do céu" */
+    .orbit { position: relative; aspect-ratio: 1; max-width: 360px; margin-inline: auto; width: 100%; }
+    .orbit i { position: absolute; inset: 0; border: 2px solid rgba(25,195,255,.45); border-radius: 50%; }
+    .orbit i:nth-child(2) { inset: 16%; border-color: rgba(255,255,255,.3); }
+    .orbit i:nth-child(3) { inset: 34%; border-color: rgba(25,195,255,.8); }
+    .orbit b { position: absolute; inset: 44%; background: var(--cyan); border-radius: 50%; box-shadow: 0 0 40px var(--cyan); }
+
+    /* ---------- Serviços e diferenciais ---------- */
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px; margin-top: 40px; }
+    .card { background: var(--white); border: 1px solid #dde4f5; border-radius: var(--radius); padding: 28px; border-top: 4px solid var(--blue); }
+    .card h3 { font-size: 1.15rem; margin-bottom: 8px; }
+    .card p, .lead { color: var(--muted); }
+    .alt { background: var(--sky); }
+    .stat { font-size: 2.4rem; font-weight: 700; color: var(--blue); }
+
+    /* ---------- Formulário ---------- */
+    .form-box { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: start; }
+    form { background: var(--white); padding: 32px; border-radius: var(--radius); border: 1px solid #dde4f5; display: grid; gap: 18px; }
+    label { font-weight: 500; font-size: .9rem; display: grid; gap: 6px; }
+    input { font: 400 1rem var(--font); padding: 12px 14px; border: 1.5px solid #c3cde8; border-radius: 8px; }
+    input.invalid { border-color: #d6293e; background: #fff5f6; }
+    #form-msg { font-size: .9rem; min-height: 1.4em; }
+    #form-msg.ok { color: #0b7a4b; } #form-msg.err { color: #d6293e; }
+
+    /* ---------- Footer + monitor pedagógico ---------- */
+    footer { background: var(--navy); color: #cdd8ff; padding: 56px 0 32px; }
+    footer .row { display: flex; flex-wrap: wrap; gap: 24px; justify-content: space-between; align-items: center; }
+    footer a:not(.btn):hover { color: var(--cyan); }
+    .links { display: flex; gap: 24px; flex-wrap: wrap; }
+    #monitor { margin-top: 32px; background: #06143d; border-radius: 8px; padding: 16px; font: 12px/1.5 ui-monospace, Menlo, Consolas, monospace;
+               color: #8fe3ff; max-height: 180px; overflow: auto; white-space: pre-wrap; }
+
+    @media (max-width: 800px) {
+      .hero .wrap, .form-box { grid-template-columns: 1fr; }
+      nav a:not(.btn) { display: none; }  /* no mobile mantém só o botão do header */
+      section { padding: 64px 0; }
+    }
+    @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+  </style>
+</head>
+<!-- ==========================================================================
+     FECHAMENTO DO <head>
+     ========================================================================== -->
+
+
+<!-- ==========================================================================
+     ABERTURA DO <body>
+     ========================================================================== -->
+<body>
+
+  <!-- ===================== GTM: SNIPPET <noscript> =====================
+       >>> COLE AQUI o <noscript> do Google Tag Manager (parte 2 de 2) <<<
+       Deve ser a PRIMEIRA coisa logo após a abertura do <body>.
+       =================== FIM DO ESPAÇO GTM <body> =================== -->
+
+
+  <!-- ========================= ABERTURA DO <header> ========================= -->
+  <header>
+    <div class="wrap bar">
+      <a href="#topo" class="logo" aria-label="Constelar - início">Const<span>elar</span></a>
+      <nav aria-label="Principal">
+        <!-- Links do header → custom_type automático: "link-header" -->
+        <a href="#servicos">Serviços</a>
+        <a href="#diferenciais">Diferenciais</a>
+        <!-- Botão do header → custom_type automático: "botao-header" -->
+        <a href="#contato" class="btn sm" role="button">Quero participar</a>
+      </nav>
+    </div>
+  </header>
+  <!-- ========================= FECHAMENTO DO </header> ========================= -->
+
+
+  <main id="topo">
+
+    <!-- ---------------- Hero ---------------- -->
+    <section class="hero">
+      <div class="wrap">
+        <div>
+          <h1>Aprenda a ler o céu noturno com dados, não com achismo</h1>
+          <p>Um curso online de astronomia que transforma observações em medições: você registra, compara e entende o que viu no céu.</p>
+          <div class="actions">
+            <a href="#contato" class="btn" role="button">Quero começar agora</a>
+            <a href="#servicos" class="btn ghost" role="button">Ver o que vou aprender</a>
+          </div>
+        </div>
+        <div class="orbit" aria-hidden="true"><i></i><i></i><i></i><b></b></div>
+      </div>
+    </section>
+
+    <!-- ---------------- Serviços ---------------- -->
+    <section id="servicos">
+      <div class="wrap">
+        <h2>O que você vai aprender</h2>
+        <p class="lead">Três trilhas práticas, do primeiro registro à análise completa.</p>
+        <div class="grid">
+          <article class="card"><h3>Mapas do céu</h3><p>Identifique constelações e planetas usando só o celular e um caderno de campo.</p></article>
+          <article class="card"><h3>Registro de observações</h3><p>Monte uma planilha de brilho, horário e posição para comparar noites diferentes.</p></article>
+          <article class="card"><h3>Análise de padrões</h3><p>Descubra ciclos da Lua e o movimento dos astros com gráficos simples.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------------- Diferenciais ---------------- -->
+    <section id="diferenciais" class="alt">
+      <div class="wrap">
+        <h2>Por que a Constelar é diferente</h2>
+        <div class="grid">
+          <div><div class="stat">12</div><p class="lead">noites de prática guiada, com tarefas curtas.</p></div>
+          <div><div class="stat">100%</div><p class="lead">online, sem telescópio obrigatório.</p></div>
+          <div><div class="stat">1:1</div><p class="lead">retorno individual do seu caderno de campo.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------------- Formulário de leads ---------------- -->
+    <section id="contato">
+      <div class="wrap form-box">
+        <div>
+          <h2>Garanta sua vaga na próxima turma</h2>
+          <p class="lead">Preencha os campos e receba o calendário das aulas por e-mail.</p>
+        </div>
+        <!-- novalidate: a validação é feita no JS para garantir que o dataLayer só dispare com tudo preenchido -->
+        <form id="lead-form" novalidate>
+          <label>Nome <input type="text" name="nome" autocomplete="name" required></label>
+          <label>E-mail <input type="email" name="email" autocomplete="email" required></label>
+          <label>Cargo/Empresa <input type="text" name="cargo_empresa" autocomplete="organization-title" required></label>
+          <button type="submit" class="btn">Enviar meus dados</button>
+          <p id="form-msg" role="status"></p>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <!-- ========================= Footer ========================= -->
+  <footer>
+    <div class="wrap">
+      <div class="row">
+        <strong>Constelar © 2026</strong>
+        <!-- Links do footer → custom_type automático: "link-footer" -->
+        <div class="links">
+          <a href="#servicos">Serviços</a>
+          <a href="#diferenciais">Diferenciais</a>
+          <a href="#contato">Contato</a>
+        </div>
+        <!-- Botão do footer → custom_type automático: "botao-footer" -->
+        <a href="#topo" class="btn sm" role="button">Voltar ao topo</a>
+      </div>
+      <!-- Monitor didático: mostra na tela cada objeto empurrado ao dataLayer -->
+      <div id="monitor" aria-live="polite">Monitor do dataLayer: clique em qualquer botão ou link.</div>
+    </div>
+  </footer>
+
+
+  <!-- ==========================================================================
+       JAVASCRIPT DO DATALAYER
+       ========================================================================== -->
+  <script>
+  (function () {
+    'use strict';
+
+    /* 1) Garante que o dataLayer exista ANTES do GTM carregar (padrão do GTM). */
+    window.dataLayer = window.dataLayer || [];
+
+    /* 2) Nome da página (custom_section). Altere por página: lp-home, lp-obrigado etc. */
+    var PAGE_SECTION = 'lp-constelar';
+
+    /* 3) SANITIZAÇÃO ESTRITA — usada em TODOS os valores antes do push.
+          Ex.: "Quero começar agora!" → "quero-comecar-agora"                     */
+    function sanitize(value) {
+      return String(value == null ? '' : value)
+        .toLowerCase()                          // caixa baixa
+        .normalize('NFD')                       // separa letra + acento
+        .replace(/[\u0300-\u036f]/g, '')        // remove os acentos
+        .replace(/[^a-z0-9\s-]/g, '')           // remove caracteres especiais
+        .trim()
+        .replace(/\s+/g, '-')                   // espaços → hífen
+        .replace(/-+/g, '-')                    // colapsa hífens repetidos
+        .replace(/^-|-$/g, '');                 // sem hífen nas pontas
+    }
+
+    /* 4) Monitor visual (apenas pedagógico, pode ser removido sem afetar o tracking). */
+    var monitor = document.getElementById('monitor');
+    var first = true;
+    function show(obj) {
+      if (first) { monitor.textContent = ''; first = false; }
+      monitor.textContent = JSON.stringify(obj, null, 2) + '\n\n' + monitor.textContent;
+    }
+
+    /* 5) Função única de envio: monta o objeto no padrão exato e faz o push. */
+    function track(type, title) {
+      var payload = {
+        'event': 'clique',                       // nome do evento (fixo)
+        'custom_section': sanitize(PAGE_SECTION),
+        'custom_type': sanitize(type),
+        'custom_title': sanitize(title)
+      };
+      window.dataLayer.push(payload);
+      show(payload);
+    }
+
+    /* 6) Descobre o custom_type automaticamente pelo elemento e pela região da página:
+          botão → "botao" | link → "link"; dentro de <header> ou <footer> ganha o sufixo.
+          Para exceções, use o atributo data-track-type no HTML.                       */
+    function getType(el) {
+      if (el.dataset.trackType) return el.dataset.trackType;
+      var isButton = el.tagName === 'BUTTON' || el.getAttribute('role') === 'button';
+      var type = isButton ? 'botao' : 'link';
+      if (el.closest('header')) type += '-header';
+      else if (el.closest('footer')) type += '-footer';
+      return type;
+    }
+
+    /* 7) Delegação de eventos: UM listener no document cobre todos os <a> e <button>. */
+    document.addEventListener('click', function (e) {
+      var el = e.target.closest('a, button');
+      if (!el) return;
+      /* O botão de envio do formulário é tratado no evento "submit" (item 8),
+         porque o clique sozinho NÃO garante que o formulário esteja válido. */
+      if (el.type === 'submit') return;
+      var title = el.dataset.trackTitle || el.getAttribute('aria-label') || el.textContent;
+      track(getType(el), title);
+    });
+
+    /* 8) Formulário: o dataLayer só dispara se TODOS os campos estiverem preenchidos. */
+    var form = document.getElementById('lead-form');
+    var msg = document.getElementById('form-msg');
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();                        // demo: não envia a lugar nenhum; troque pelo seu back-end
+
+      var allValid = true;
+      form.querySelectorAll('input').forEach(function (input) {
+        var v = input.value.trim();              // trim: só espaços conta como vazio
+        var valid = v !== '';
+        if (input.type === 'email') valid = valid && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+        input.classList.toggle('invalid', !valid);
+        if (!valid) allValid = false;
+      });
+
+      /* Campo vazio/inválido: mostra erro e SAI, sem nenhum push no dataLayer. */
+      if (!allValid) {
+        msg.className = 'err';
+        msg.textContent = 'Preencha todos os campos, com um e-mail válido, para enviar.';
+        return;
+      }
+
+      /* Tudo preenchido: dispara o evento com custom_type "submit". */
+      track('submit', form.querySelector('[type="submit"]').textContent);
+      msg.className = 'ok';
+      msg.textContent = 'Dados enviados! Confira seu e-mail.';
+      form.reset();
+    });
+  })();
+  </script>
+
+</body>
+<!-- ========================= FECHAMENTO DO </body> ========================= -->
+</html>
